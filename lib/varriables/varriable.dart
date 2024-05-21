@@ -6,12 +6,43 @@ import 'color_variable.dart';
 
 class Variables {
   //static const String baseUrl = 'http://tashfia.binduitsolutions.com/api/';
-  static const String baseUrl = 'https://skill-test.retinasoft.com.bd/api/v1';
+  static const String baseUrl = 'https://skill-test.retinasoft.com.bd/api/v1/';
 
-  // final Map<String, String> authHeader = {
-  //   "Content-Type": "application/json",
-  //   'Authorization': 'Bearer ${PublicController.pc.loginResponse.value.token}',
-  // };
+
+
+  static List<MyListItem> items = [
+    MyListItem(
+      title: 'Common',
+
+      image: 'images/common.png',
+    ),
+    MyListItem(
+      title: 'Branch',
+
+      image: 'images/banc.png',
+    ),
+    MyListItem(
+      title: 'Tests',
+
+      image: 'images/test.jpg',
+    ),
+    MyListItem(
+      title: 'Transaction',
+
+      image: 'images/str.png',
+    ),
+
+  ];
+}
+
+class MyListItem {
+  final String title;
+  final String image;
+
+
+  MyListItem({required this.title, required this.image,});
+
+
 
   static var statusBarTheme = SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(

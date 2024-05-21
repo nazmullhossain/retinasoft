@@ -12,6 +12,7 @@ void main() {
   final PublicController publicController = Get.put(PublicController());
   runApp(const MyApp());
 }
+
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
@@ -20,24 +21,20 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String token="";
-
-  getToken()async{
-    SharedPreferences prefs=await SharedPreferences.getInstance();
-    token=await prefs.getString("token")??"";
-    setState(() {});
-  }
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    getToken();
+    PublicController.pc.getToken();
   }
+
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      home:token.isNotEmpty? NavigationWidget():LoginPages(),
+      home: PublicController.pc.token.isNotEmpty
+          ? NavigationWidget()
+          : LoginPages(),
     );
   }
 }
