@@ -54,11 +54,11 @@ class _CustomerPagesState extends State<CustomerPages> {
 
   Future<void> getCustomerData() async {
     try {
-      final url = Variables.baseUrl + 'admin/167/0/customers';
+      final url = Variables.baseUrl + 'admin/269/0/customers';
       final resonse = await http.get(
         Uri.parse(url),
         headers: {
-          'Authorization': 'Bearer ${PublicController.pc.token}',
+          'Authorization': 'Bearer 9psN17163668459q5o118',
         },
       );
       if (resonse.statusCode == 200) {
@@ -86,13 +86,18 @@ class _CustomerPagesState extends State<CustomerPages> {
       body: StreamBuilder<CustomerModel>(
           stream: _streamController.stream,
           builder: (context, snap) {
+              if(snap.connectionState==ConnectionState.waiting){
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+              if(snap.data!.customers!.customers2!.isEmpty){
+                return Center(child: Text("No data"),);
+              }
 
-            if (snap.hasData) {
               return CustomerData(snap);
-            }
-            return Center(
-              child: CircularProgressIndicator(),
-            );
+
+
           }),
       floatingActionButton: FloatingActionButton(onPressed: (){
         addEm();

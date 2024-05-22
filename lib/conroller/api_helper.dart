@@ -276,9 +276,9 @@ class ApiHelper {
 
   createCustomer(String name, String phone, String mail) async {
     var url = Uri.parse(
-        'https://skill-test.retinasoft.com.bd/api/v1/admin/167/customer/create');
+        'https://skill-test.retinasoft.com.bd/api/v1/admin/269/customer/create');
     var headers = {
-      'Authorization': 'Bearer buTY1716277709L5UD75',
+      'Authorization': 'Bearer 9psN17163668459q5o118',
     };
     var request = http.MultipartRequest('POST', url)
       ..headers.addAll(headers)
