@@ -1,20 +1,97 @@
 import 'dart:convert';
+import 'dart:ffi';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:retinasoft/conroller/public_controller.dart';
 import 'package:retinasoft/model/login_model.dart';
+import 'package:retinasoft/pages/home_pages.dart';
+import 'package:retinasoft/pages/login_pages.dart';
+import 'package:retinasoft/pages/otp_pages.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../model/business_type_model.dart';
 import '../model/customer_model.dart';
 import '../model/get_branch_model.dart';
+import '../pages/signup_otp_pages.dart';
 import '../varriables/varriable.dart';
 import 'package:http/http.dart' as http;
 
 import '../widget/loader_widget.dart';
 
 class ApiHelper {
+  Future<void> signUp(
+      String phone, String email, String name, BuildContext context) async {
+    final url =
+        Uri.parse('https://skill-test.retinasoft.com.bd/api/v1/sign-up/store');
+
+    var request = http.MultipartRequest('POST', url)
+      ..fields['phone'] = phone
+      ..fields['email'] = email
+      ..fields['name'] = name
+      ..fields['business_name'] = 'Test Account'
+      ..fields['business_type_id'] = '7';
+
+    try {
+      SharedPreferences prefs=await SharedPreferences.getInstance();
+      var response = await request.send();
+
+      if (response.statusCode == 200) {
+        var responseData = await response.stream.bytesToString();
+        var decodedResponse = jsonDecode(responseData);
+        print(decodedResponse);
+        if (decodedResponse['status'] == 200) {
+      PublicController.pc.i = decodedResponse['identifier_id'];
+        // await  prefs.setInt("id", "${PublicController.pc.id}" as int);
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (_) => SignupOtpPages()));
+        } else {
+          print('Response: ${decodedResponse['status']}');
+          LoaderWidget.warningSnackBar(title: "", message: "${responseData}");
+        }
+      } else {
+        print('Sign Up failed with status: ${response.statusCode}');
+        var responseData = await response.stream.bytesToString();
+        print('Response: $responseData');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
+
+  Future<void> signupVerifyOtpCode(String id,String otpCode, BuildContext context) async {
+    var url = Uri.parse(
+        'https://skill-test.retinasoft.com.bd/api/v1/sign-up/verify-otp-code');
+
+    var request = http.MultipartRequest('POST', url)
+      ..fields['identifier_id'] = id
+      ..fields['otp_code'] = otpCode;
+
+    try {
+      var response = await request.send();
+      if (response.statusCode == 200) {
+        var responseData = await response.stream.bytesToString();
+        var jsonResponse = json.decode(responseData);
+        if (jsonResponse["status"] == 200) {
+          SharedPreferences prefs=await SharedPreferences.getInstance();
+          // prefs.remove("id");
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (_) => LoginPages()));
+        }
+        print('Response data: $jsonResponse');
+      } else {
+        print('Failed to verify OTP. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
+
+
+
+
+
+
   Future<void> sendOtp(BuildContext context, String phoneNuber) async {
     // if (_formKey.currentState!.validate()) {
     //   setState(() {
@@ -40,7 +117,7 @@ class ApiHelper {
 
   //login
 
-  Future<void> login(String otp, String num) async {
+  Future<void> login(BuildContext context, String otp, String num) async {
     var response = await http.post(
       Uri.parse(Variables.baseUrl + 'login'),
       body: {
@@ -52,15 +129,23 @@ class ApiHelper {
     if (response.statusCode == 200) {
       PublicController.pc.loginModel.value =
           LoginModel.fromJson(jsonDecode(response.body));
-      print("model ${PublicController.pc.loginModel.value.user!.apiToken}");
-      String token = "${PublicController.pc.loginModel.value.user!.apiToken}";
-      SharedPreferences sharedPreferences =
-          await SharedPreferences.getInstance();
-      sharedPreferences.setString("token", token);
-      print("sharre token $token");
-
-      print('Login successful');
-      LoaderWidget.warningSnackBar(title: "Hi,*", message: "Login successful");
+      if (PublicController.pc.loginModel.value.status == 200) {
+        print("model ${PublicController.pc.loginModel.value.user!.apiToken}");
+        String token = "${PublicController.pc.loginModel.value.user!.apiToken}";
+        SharedPreferences sharedPreferences =
+            await SharedPreferences.getInstance();
+        sharedPreferences.setString("token", token);
+        print("sharre token $token");
+        print('Login successful');
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (_) => HomePages()));
+        LoaderWidget.warningSnackBar(
+            title: "Hi,*", message: "Login successful");
+      } else {
+        LoaderWidget.warningSnackBar(title: "Hi,*", message: "wrong otp");
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (_) => LoginPages()));
+      }
 
       // You can parse response.body here
     } else {
@@ -189,10 +274,9 @@ class ApiHelper {
     }
   }
 
-
-
-   createCustomer(String name,String phone,String mail) async {
-    var url = Uri.parse('https://skill-test.retinasoft.com.bd/api/v1/admin/167/customer/create');
+  createCustomer(String name, String phone, String mail) async {
+    var url = Uri.parse(
+        'https://skill-test.retinasoft.com.bd/api/v1/admin/167/customer/create');
     var headers = {
       'Authorization': 'Bearer buTY1716277709L5UD75',
     };
@@ -217,9 +301,9 @@ class ApiHelper {
     }
   }
 
-
   Future<void> customerDelete(int id) async {
-    final url = Uri.parse('https://skill-test.retinasoft.com.bd/api/v1/admin/167/customer/$id/delete');
+    final url = Uri.parse(
+        'https://skill-test.retinasoft.com.bd/api/v1/admin/167/customer/$id/delete');
     final response = await http.delete(
       url,
       headers: {
@@ -234,12 +318,10 @@ class ApiHelper {
     }
   }
 
-
-   updateCustomer(String name,String number,String gmail,int id) async {
-    var url = Uri.parse('https://skill-test.retinasoft.com.bd/api/v1/admin/167/customer/$id/update');
-    var headers = {
-      'Authorization': 'Bearer ${PublicController.pc.token}'
-    };
+  updateCustomer(String name, String number, String gmail, int id) async {
+    var url = Uri.parse(
+        'https://skill-test.retinasoft.com.bd/api/v1/admin/167/customer/$id/update');
+    var headers = {'Authorization': 'Bearer ${PublicController.pc.token}'};
 
     var request = http.MultipartRequest('POST', url)
       ..headers.addAll(headers)
@@ -259,5 +341,31 @@ class ApiHelper {
     }
   }
 
+  Future<void> logout(BuildContext context) async {
+    final response = await http.post(
+      Uri.parse('https://skill-test.retinasoft.com.bd/api/v1/logout'),
+      headers: {
+        'Authorization': 'Bearer ${PublicController.pc.token}',
+      },
+    );
 
+    if (response.statusCode == 200) {
+      var jsonResponse=jsonDecode(response.body);
+      print(".....>>>>>>${jsonResponse["status"]}");
+      // Successful logout
+      // Obtain shared preferences.
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.remove('token');
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (_) => LoginPages()));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Logged out successfully')),
+      );
+    } else {
+      // Error logging out
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to log out')),
+      );
+    }
+  }
 }

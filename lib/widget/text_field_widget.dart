@@ -13,7 +13,12 @@ class TextFieldWidgett extends StatelessWidget {
           hintText: hinText,
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
-          )),
+          ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+
+      ),
     );
   }
 }

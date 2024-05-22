@@ -4,8 +4,9 @@ import 'package:google_fonts/google_fonts.dart';
 import '../varriables/color_variable.dart';
 
 class AppBarWidget extends StatelessWidget  implements PreferredSizeWidget{
- const  AppBarWidget({super.key,required this.titleName});
+   AppBarWidget({super.key,required this.titleName,this.onTap});
  final String titleName;
+ VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -18,6 +19,9 @@ class AppBarWidget extends StatelessWidget  implements PreferredSizeWidget{
         fontWeight: FontWeight.w700,
         fontStyle: FontStyle.italic,
       ) ,),
+      actions: [
+        OutlinedButton(onPressed: onTap, child: Text("Logout"))
+      ]
     );
   }
  @override

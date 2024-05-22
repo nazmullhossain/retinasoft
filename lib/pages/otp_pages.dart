@@ -29,25 +29,28 @@ class _OtpPagesState extends State<OtpPages> {
         builder: (pc) {
           return Padding(
                 padding: const EdgeInsets.all(12.0),
-                child: Center(
-                  child:
-                       OTPTextField(
-                          controller: otpController,
-                          length: 6,
-                          width: MediaQuery.of(context).size.width,
-                          textFieldAlignment: MainAxisAlignment.spaceAround,
-                          fieldWidth: 45,
-                          fieldStyle: FieldStyle.box,
-                          outlineBorderRadius: 15,
-                          style: TextStyle(fontSize: 17),
-                          onChanged: (pin) {
-                            print("Changed: " + pin);
-                          },
-                          onCompleted: (pin) {
-                            apiHelper.login(pin, controller.textEditingController.value.text);
-                            print("Completed: " + pin);
-                          })
-
+                child: Column(
+                  children: [
+                    SizedBox(height: 30,),
+                    OTPTextField(
+                       controller: otpController,
+                       length: 6,
+                       width: MediaQuery.of(context).size.width,
+                       textFieldAlignment: MainAxisAlignment.spaceAround,
+                       fieldWidth: 45,
+                       fieldStyle: FieldStyle.box,
+                       outlineBorderRadius: 15,
+                       style: TextStyle(fontSize: 17),
+                       onChanged: (pin) {
+                         print("Changed: " + pin);
+                       },
+                       onCompleted: (pin) {
+                         apiHelper.login(context,pin, controller.textEditingController.value.text);
+                         print("Completed: " + pin);
+                       }),
+                    SizedBox(height: 15,),
+                    Text("OTP will be: 123456",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),)
+                  ],
                 ),
               );
         }

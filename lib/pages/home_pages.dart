@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:retinasoft/widget/app_bar_widget.dart';
 
+import '../widget/drawer_widget.dart';
 import '../widget/gridview_widget.dart';
 import '../widget/slider_widget.dart';
 
@@ -11,6 +12,7 @@ class HomePages extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBarWidget(titleName: "Home",),
+      drawer: DrawerWidget(),
 
       body: _bodyUi(),
 

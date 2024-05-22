@@ -42,12 +42,11 @@ class _CustomerPagesState extends State<CustomerPages> {
     _streamController.close();
     timer!.cancel();
   }
-
-  Timer? time;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    PublicController.pc.getToken();
     timer = Timer.periodic(Duration(seconds: 1), (timer) {
       getCustomerData();
     });
@@ -87,6 +86,7 @@ class _CustomerPagesState extends State<CustomerPages> {
       body: StreamBuilder<CustomerModel>(
           stream: _streamController.stream,
           builder: (context, snap) {
+
             if (snap.hasData) {
               return CustomerData(snap);
             }

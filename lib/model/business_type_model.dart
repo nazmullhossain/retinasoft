@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'package:flutter/material.dart';
 BusinessTypeModel customerModelFromJson(String str) =>
     BusinessTypeModel.fromJson(json.decode(str));
 class BusinessTypeModel {

@@ -3,6 +3,9 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
+import 'package:get/get_rx/get_rx.dart';
+import 'package:get/get_rx/src/rx_types/rx_types.dart';
+import 'package:get/state_manager.dart';
 import 'package:retinasoft/model/business_type_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -19,7 +22,11 @@ class PublicController extends GetxController {
   Rx<BusinessTypeModel> businessTypeModel = BusinessTypeModel().obs;
   final hidePassword = true.obs;
   var textEditingController = TextEditingController().obs;
+  var idController = TextEditingController().obs;
+  int i=0 ;
   String token = "";
+  int id=0;
+
 
   @override
   void onInit() {
@@ -44,6 +51,8 @@ class PublicController extends GetxController {
   getToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     token = await prefs.getString("token") ?? "";
+    // id=await prefs.getInt("id")??0;
+
     print(token);
     update();
   }
