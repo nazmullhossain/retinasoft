@@ -6,8 +6,10 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:retinasoft/conroller/api_helper.dart';
+import 'package:retinasoft/varriables/color_variable.dart';
 import 'package:retinasoft/widget/app_bar_widget.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import '../conroller/public_controller.dart';
 import '../conroller/test_service.dart';
 import '../model/business_type_model.dart';
@@ -23,7 +25,6 @@ class BranchPages extends StatefulWidget {
 }
 
 class _BranchPagesState extends State<BranchPages> {
-
   ApiHelper apiHelper = ApiHelper();
   TextEditingController _branchController = TextEditingController();
   TextEditingController _upbranchController = TextEditingController();
@@ -42,10 +43,20 @@ class _BranchPagesState extends State<BranchPages> {
   @override
   void initState() {
     // TODO: implement initState
+    getToken();
     super.initState();
     timer = Timer.periodic(Duration(seconds: 1), (timer) {
       getCustomerData();
     });
+  }
+
+  String token = '';
+
+  getToken() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    token = await prefs.getString("token") ?? "";
+
+    print("token $token");
   }
 
   Future<void> getCustomerData() async {
@@ -54,7 +65,7 @@ class _BranchPagesState extends State<BranchPages> {
       final resonse = await http.get(
         Uri.parse(url),
         headers: {
-          'Authorization': 'Bearer ${PublicController.pc.token}',
+          'Authorization': 'Bearer $token',
         },
       );
       if (resonse.statusCode == 200) {
@@ -81,7 +92,6 @@ class _BranchPagesState extends State<BranchPages> {
             stream: _streamController.stream,
             builder: (context, snap) {
               if (snap.hasData) {
-
                 return SizedBox(
                   height: MediaQuery.of(context).size.height * 0.9,
                   child: ListView.builder(
@@ -93,10 +103,10 @@ class _BranchPagesState extends State<BranchPages> {
                           child: Container(
                             height: dSize(0.4),
                             // padding: EdgeInsets.all(10),
-                            margin: EdgeInsets.all(10),
+                            margin: EdgeInsets.all(8),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
-                              color: Colors.amber,
+                              color: AllColor.secondaryColor,
                             ),
                             child: ListTile(
                               contentPadding: EdgeInsets.all(10),

@@ -13,6 +13,7 @@ import 'package:retinasoft/varriables/varriable.dart';
 import 'package:retinasoft/widget/app_bar_widget.dart';
 import 'package:http/http.dart' as http;
 import 'package:retinasoft/widget/input_decration_widget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../model/customer_model.dart';
 import '../widget/text_field_widget.dart';
 
@@ -24,29 +25,42 @@ class CustomerPages extends StatefulWidget {
 }
 
 class _CustomerPagesState extends State<CustomerPages> {
-  TextEditingController name=TextEditingController();
-  TextEditingController phone=TextEditingController();
-  TextEditingController gmail=TextEditingController();
+  TextEditingController name = TextEditingController();
+  TextEditingController phone = TextEditingController();
+  TextEditingController gmail = TextEditingController();
   //edit
-  TextEditingController ename=TextEditingController();
-  TextEditingController egmail=TextEditingController();
-  TextEditingController ephn=TextEditingController();
+  TextEditingController ename = TextEditingController();
+  TextEditingController egmail = TextEditingController();
+  TextEditingController ephn = TextEditingController();
   final controller = Get.put(PublicController());
-  ApiHelper apiHelper=ApiHelper();
+  ApiHelper apiHelper = ApiHelper();
   StreamController<CustomerModel> _streamController = StreamController();
   Timer? timer;
+
+  String token = '';
+  String branch = '';
+  getToken() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    token = await prefs.getString("token") ?? "";
+    branch = await prefs.getString("branch") ?? "";
+    print("token $token");
+  }
+
   @override
   void dispose() {
     // TODO: implement dispose
     super.dispose();
+
     _streamController.close();
     timer!.cancel();
   }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    PublicController.pc.getToken();
+    getToken();
+    print("customer tokne${PublicController.pc.token}");
     timer = Timer.periodic(Duration(seconds: 1), (timer) {
       getCustomerData();
     });
@@ -54,11 +68,11 @@ class _CustomerPagesState extends State<CustomerPages> {
 
   Future<void> getCustomerData() async {
     try {
-      final url = Variables.baseUrl + 'admin/269/0/customers';
+      final url = '${Variables.baseUrl}admin/$branch/0/customers';
       final resonse = await http.get(
         Uri.parse(url),
         headers: {
-          'Authorization': 'Bearer 9psN17163668459q5o118',
+          'Authorization': 'Bearer $token',
         },
       );
       if (resonse.statusCode == 200) {
@@ -86,22 +100,25 @@ class _CustomerPagesState extends State<CustomerPages> {
       body: StreamBuilder<CustomerModel>(
           stream: _streamController.stream,
           builder: (context, snap) {
-              if(snap.connectionState==ConnectionState.waiting){
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
-              if(snap.data!.customers!.customers2!.isEmpty){
-                return Center(child: Text("No data"),);
-              }
+            if (snap.connectionState == ConnectionState.waiting) {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+            if (snap.data!.customers!.customers2!.isEmpty) {
+              return Center(
+                child: Text("No data"),
+              );
+            }
 
-              return CustomerData(snap);
-
-
+            return CustomerData(snap);
           }),
-      floatingActionButton: FloatingActionButton(onPressed: (){
-        addEm();
-      },child: Icon(Icons.add),),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          addEm();
+        },
+        child: Icon(Icons.add),
+      ),
     );
   }
 
@@ -114,23 +131,22 @@ class _CustomerPagesState extends State<CustomerPages> {
             final cus = snap.data!.customers!.customers2![index];
 
             return InkWell(
-              onTap: (){
-
-              },
+              onTap: () {},
               child: Container(
+
                 height: dSize(0.40),
                 margin: EdgeInsets.all(5),
                 decoration: BoxDecoration(
-                    color: AllColor.hintColor,
+                    color: AllColor.secondaryColor,
                     borderRadius: BorderRadius.circular(10)),
                 child: ListTile(
                   title: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("${cus.id}"),
-                      Text("${cus.name}"),
-                      Text("${cus.balance}"),
-                      Text("${cus.phone}"),
+                      Text("${cus.id}",style: Variables.style(context, 15),),
+                      Text("${cus.name}",style: Variables.style(context, 15),),
+                      Text("${cus.balance}",style: Variables.style(context, 15),),
+                      Text("${cus.phone}",style: Variables.style(context, 15),),
                     ],
                   ),
                   trailing: SizedBox(
@@ -138,21 +154,21 @@ class _CustomerPagesState extends State<CustomerPages> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        OutlinedButton(onPressed: () {
-                          ename.text=cus.name;
-                          ephn.text=cus.phone;
-                        editEm(cus.id);
-
-
-
-                        }, child: Icon(Icons.edit)),
+                        OutlinedButton(
+                            onPressed: () {
+                              ename.text = cus.name;
+                              ephn.text = cus.phone;
+                              editEm(cus.id);
+                            },
+                            child: Icon(Icons.edit)),
                         SizedBox(
                           width: 2,
                         ),
                         OutlinedButton(
                             onPressed: () {
                               apiHelper.customerDelete(cus.id);
-                            }, child: Icon(Icons.delete)),
+                            },
+                            child: Icon(Icons.delete)),
                       ],
                     ),
                   ),
@@ -166,74 +182,82 @@ class _CustomerPagesState extends State<CustomerPages> {
   Future addEm() => showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        content: Container(
-          margin: EdgeInsets.all(10),
-          child: Column(
-            children: [
-              Text(
-                "Create Customer",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+            content: Container(
+              margin: EdgeInsets.all(10),
+              child: Column(
+                children: [
+                  Text(
+                    "Create Customer",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                  ),
+                  TextFieldWidgett(controller: name, hinText: "name"),
+                  TextFieldWidgett(controller: phone, hinText: "phone"),
+                  TextFieldWidgett(controller: gmail, hinText: "gmail"),
+                  OutlinedButton(
+                      onPressed: () async {
+                        if (name.text.isNotEmpty &&
+                            phone.text.isNotEmpty &&
+                            gmail.text.isNotEmpty) {
+                          await apiHelper.createCustomer(
+                              name.text, phone.text, gmail.text);
+                          Navigator.pop(context);
+                        } else {
+                          Fluttertoast.showToast(
+                              msg: "Please complete all field",
+                              toastLength: Toast.LENGTH_SHORT,
+                              gravity: ToastGravity.CENTER,
+                              timeInSecForIosWeb: 1,
+                              backgroundColor: Colors.red,
+                              textColor: Colors.white,
+                              fontSize: 16.0);
+                        }
+                      },
+                      child: Text("Create Branch"))
+                ],
               ),
-              TextFieldWidgett(controller: name, hinText: "name"),
-              TextFieldWidgett(controller: phone, hinText: "phone"),
-              TextFieldWidgett(controller: gmail, hinText: "gmail"),
-              OutlinedButton(
-                  onPressed: () async {
-                    if (name.text.isNotEmpty && phone.text.isNotEmpty && gmail.text.isNotEmpty) {
-                     await apiHelper.createCustomer(name.text, phone.text, gmail.text);
-                     Navigator.pop(context);
-
-                    } else {
-                      Fluttertoast.showToast(
-                          msg: "Please complete all field",
-                          toastLength: Toast.LENGTH_SHORT,
-                          gravity: ToastGravity.CENTER,
-                          timeInSecForIosWeb: 1,
-                          backgroundColor: Colors.red,
-                          textColor: Colors.white,
-                          fontSize: 16.0);
-                    }
-
-
-                  },
-                  child: Text("Create Branch"))
-            ],
-          ),
-        ),
-      ));
+            ),
+          ));
 
   Future editEm(int id) => showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        content: Container(
-          child: Column(
-            children: [
-              TextFieldWidgett(controller: ename, hinText: "name"),
-              SizedBox(height: 1,),
-              TextFieldWidgett(controller: egmail, hinText: "gmail"),
-              SizedBox(height: 1,),
-              TextFieldWidgett(controller: ephn, hinText: "phone"),
-              SizedBox(height: 1,),
-              OutlinedButton(
-                  onPressed: () async {
-                    if(ename.text.isNotEmpty && egmail.text.isNotEmpty && ephn.text.isNotEmpty){
-                      apiHelper.updateCustomer(ename.text, egmail.text, ephn.text,id);
-                      Navigator.pop(context);
-                    }else{
-                      Fluttertoast.showToast(
-                          msg: "Please complete all field",
-                          toastLength: Toast.LENGTH_SHORT,
-                          gravity: ToastGravity.CENTER,
-                          timeInSecForIosWeb: 1,
-                          backgroundColor: Colors.red,
-                          textColor: Colors.white,
-                          fontSize: 16.0);
-                    }
-
-                  },
-                  child: Text("Update"))
-            ],
-          ),
-        ),
-      ));
+            content: Container(
+              child: Column(
+                children: [
+                  TextFieldWidgett(controller: ename, hinText: "name"),
+                  SizedBox(
+                    height: 1,
+                  ),
+                  TextFieldWidgett(controller: egmail, hinText: "gmail"),
+                  SizedBox(
+                    height: 1,
+                  ),
+                  TextFieldWidgett(controller: ephn, hinText: "phone"),
+                  SizedBox(
+                    height: 1,
+                  ),
+                  OutlinedButton(
+                      onPressed: () async {
+                        if (ename.text.isNotEmpty &&
+                            egmail.text.isNotEmpty &&
+                            ephn.text.isNotEmpty) {
+                          apiHelper.updateCustomer(
+                              ename.text, egmail.text, ephn.text, id);
+                          Navigator.pop(context);
+                        } else {
+                          Fluttertoast.showToast(
+                              msg: "Please complete all field",
+                              toastLength: Toast.LENGTH_SHORT,
+                              gravity: ToastGravity.CENTER,
+                              timeInSecForIosWeb: 1,
+                              backgroundColor: Colors.red,
+                              textColor: Colors.white,
+                              fontSize: 16.0);
+                        }
+                      },
+                      child: Text("Update"))
+                ],
+              ),
+            ),
+          ));
 }

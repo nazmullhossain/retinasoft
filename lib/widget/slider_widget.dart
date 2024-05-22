@@ -31,20 +31,23 @@ class _SliderScreenState extends State<SliderScreen> {
               child: CarouselSlider(
                 items: imageList
                     .map(
-                      (item) => Image.asset(
-                    item['image_path'],
-                    fit: BoxFit.cover,
-                    height: 144,
-                    width: double.infinity,
-
-
-                  ),
-                )
+                      (item) => Container(
+                        margin: EdgeInsets.all(5),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(20),
+                          child: Image.asset(
+                            item['image_path'],
+                            fit: BoxFit.cover,
+                            height: 144,
+                            width: double.infinity,
+                          ),
+                        ),
+                      ),
+                    )
                     .toList(),
                 carouselController: carouselController,
                 options: CarouselOptions(
                   height: 144,
-
                   scrollPhysics: const BouncingScrollPhysics(),
                   autoPlay: true,
                   aspectRatio: 2,
@@ -73,8 +76,9 @@ class _SliderScreenState extends State<SliderScreen> {
                       ),
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
-                          color:
-                          currentIndex == entry.key ? Color(0xff29B0B0) : Color(0xffB4C7DE)),
+                          color: currentIndex == entry.key
+                              ? Color(0xff29B0B0)
+                              : Color(0xffB4C7DE)),
                     ),
                   );
                 }).toList(),
@@ -82,10 +86,7 @@ class _SliderScreenState extends State<SliderScreen> {
             ),
           ],
         ),
-
-
       ]),
     );
-
   }
 }

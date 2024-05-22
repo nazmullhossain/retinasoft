@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'color_variable.dart';
 
@@ -8,27 +10,36 @@ class Variables {
   //static const String baseUrl = 'http://tashfia.binduitsolutions.com/api/';
   static const String baseUrl = 'https://skill-test.retinasoft.com.bd/api/v1/';
 
-
+ static TextStyle style(BuildContext context,double size){
+    return GoogleFonts.lato(
+      textStyle: Theme.of(context).textTheme.displayLarge,
+      fontSize: size,
+      color: Colors.white,
+      fontWeight: FontWeight.w700,
+      fontStyle: FontStyle.italic,
+    );
+  }
 
   static List<MyListItem> items = [
     MyListItem(
       title: 'Common',
+      color: Color(0xffFFF0F0),
 
       image: 'images/common.png',
     ),
     MyListItem(
       title: 'Branch',
-
+      color: Color(0xffE3F3FF),
       image: 'images/banc.png',
     ),
     MyListItem(
       title: 'Tests',
-
+      color: Color(0xffF0F5F9),
       image: 'images/test.jpg',
     ),
     MyListItem(
       title: 'Transaction',
-
+      color: Color(0xffFFF2DF),
       image: 'images/str.png',
     ),
 
@@ -38,9 +49,10 @@ class Variables {
 class MyListItem {
   final String title;
   final String image;
+  final Color color;
 
 
-  MyListItem({required this.title, required this.image,});
+  MyListItem({required this.title, required this.image,required this.color});
 
 
 

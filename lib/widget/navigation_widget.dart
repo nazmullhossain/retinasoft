@@ -1,6 +1,8 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:retinasoft/varriables/color_variable.dart';
+import 'package:retinasoft/varriables/varriable.dart';
 
 import '../pages/home_pages.dart';
 
@@ -50,7 +52,7 @@ class _NavigationWidgetState extends State<NavigationWidget> {
               // backgroundColor: Colors.transparent,
                 iconTheme: IconThemeData(color: Colors.white)),
             child: CurvedNavigationBar(
-              color: Color(0xff48043F),
+              color: AllColor.primaryColor,
 
               backgroundColor: Colors.transparent,
               height: 60,

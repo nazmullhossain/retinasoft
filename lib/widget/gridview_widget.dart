@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:retinasoft/pages/business_type_pages.dart';
+import 'package:retinasoft/pages/profile_pages.dart';
 import 'package:retinasoft/varriables/varriable.dart';
 
 import '../pages/branch_pages.dart';
@@ -46,6 +47,9 @@ class GirdViewWiget extends StatelessWidget {
                           builder: (context) =>
                               CustomerPages()));
                 }
+                if(index==3){
+                  Navigator.push(context, MaterialPageRoute(builder: (_)=>ProfilePages()));
+                }
 
 
               },
@@ -59,7 +63,7 @@ class GirdViewWiget extends StatelessWidget {
                 margin: EdgeInsets.all(10),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
-                  color: Colors.grey
+                  color:  Variables.items[index].color,
                 ),
                 child: Column(
                   mainAxisAlignment:

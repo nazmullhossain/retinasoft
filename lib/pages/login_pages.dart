@@ -67,8 +67,7 @@ class _LoginPagesState extends State<LoginPages> {
                             Duration(seconds: 3)); // Simulate a 3-second delay
                         await apiHelper.sendOtp(context,
                             controller.textEditingController.value.text.trim());
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (_) => OtpPages()));
+
 
                         setState(() {
                           _isLoggingIn = false;

@@ -25,6 +25,7 @@ class PublicController extends GetxController {
   var idController = TextEditingController().obs;
   int i=0 ;
   String token = "";
+  String branch = "";
   int id=0;
 
 
@@ -51,9 +52,10 @@ class PublicController extends GetxController {
   getToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     token = await prefs.getString("token") ?? "";
+    token = await prefs.getString("branch") ?? "";
     // id=await prefs.getInt("id")??0;
-
-    print(token);
     update();
+    print(token);
+
   }
 }

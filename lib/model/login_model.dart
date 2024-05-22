@@ -33,8 +33,8 @@ class User {
   String? name;
   String? email;
   String? phone;
-  Null? image;
-  Null? imageFullPath;
+  dynamic? image;
+  dynamic? imageFullPath;
   String? businessName;
   String? businessType;
   int? businessTypeId;
