@@ -21,23 +21,12 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    getToken();
-  }
-  String token='';
-  getToken()async{
-    SharedPreferences prefs=await SharedPreferences.getInstance();
-    token=await prefs.getString("token")??"";
-    print("token $token");
-  }
+
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      home: token.isNotEmpty
+      home: PublicController.pc.token.isNotEmpty
           ? NavigationWidget()
           : LoginPages(),
     );
