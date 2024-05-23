@@ -1,16 +1,17 @@
-# retinasoft
+# retinasoft task
 
-A new Flutter project.
+
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+# video_app
 
-A few resources to get you started if this is your first Flutter project:
+Drive link [https://drive.google.com/drive/folders/1wnCK1WOkwfYY25bBvuDNTQwZg_7oXZg_?usp=drive_link]
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+https://github.com/nazmullhossain/qtec_task/blob/main/images/plus.png
+# home page
+<img src="https://github.com/nazmullhossain/qtec_task/blob/main/images/task1.jpeg">
+
+# second page
+<img src="https://github.com/nazmullhossain/qtec_task/blob/main/images/task2.jpeg">
