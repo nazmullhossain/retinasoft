@@ -10,9 +10,10 @@ class SliderScreen extends StatefulWidget {
 
 class _SliderScreenState extends State<SliderScreen> {
   List imageList = [
-    {"id": 1, "image_path": 'images/welcome banner.png'},
+    {"id": 1, "image_path": 'images/pr.jpg'},
     {"id": 2, "image_path": 'images/welcome banner.png'},
-    {"id": 3, "image_path": 'images/welcome banner.png'}
+    {"id": 3, "image_path": 'images/csut.png'},
+    {"id": 4, "image_path": 'images/fd.png'},
   ];
   final CarouselController carouselController = CarouselController();
   int currentIndex = 0;

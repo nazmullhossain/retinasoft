@@ -78,12 +78,7 @@ class _ProfilePagesState extends State<ProfilePages> {
       backgroundColor: Colors.grey,
       appBar: AppBarWidget(
         titleName: "Profile",
-        onTap: () async {
-          SharedPreferences prefs = await SharedPreferences.getInstance();
-          await apiHelper.logout(context);
-          prefs.remove("token");
-          prefs.remove("branch");
-        },
+
       ),
       body: StreamBuilder<ProfileModel>(
           stream: _streamController.stream,

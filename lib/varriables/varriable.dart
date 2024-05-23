@@ -33,14 +33,14 @@ class Variables {
       image: 'images/banc.png',
     ),
     MyListItem(
-      title: 'Tests',
+      title: 'Customer',
       color: Color(0xffF0F5F9),
-      image: 'images/test.jpg',
+      image: 'images/customer.jpg',
     ),
     MyListItem(
-      title: 'Transaction',
+      title: 'Profile',
       color: Color(0xffFFF2DF),
-      image: 'images/str.png',
+      image: 'images/pr.jpg',
     ),
 
   ];

@@ -191,8 +191,11 @@ class _CustomerPagesState extends State<CustomerPages> {
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                   ),
                   TextFieldWidgett(controller: name, hinText: "name"),
+                  SizedBox(height: 4,),
                   TextFieldWidgett(controller: phone, hinText: "phone"),
+                  SizedBox(height: 4,),
                   TextFieldWidgett(controller: gmail, hinText: "gmail"),
+                  SizedBox(height: 4,),
                   OutlinedButton(
                       onPressed: () async {
                         if (name.text.isNotEmpty &&
@@ -226,15 +229,15 @@ class _CustomerPagesState extends State<CustomerPages> {
                 children: [
                   TextFieldWidgett(controller: ename, hinText: "name"),
                   SizedBox(
-                    height: 1,
+                    height: 5,
                   ),
                   TextFieldWidgett(controller: egmail, hinText: "gmail"),
                   SizedBox(
-                    height: 1,
+                    height: 5,
                   ),
                   TextFieldWidgett(controller: ephn, hinText: "phone"),
                   SizedBox(
-                    height: 1,
+                    height: 5,
                   ),
                   OutlinedButton(
                       onPressed: () async {

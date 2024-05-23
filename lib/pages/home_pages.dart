@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:retinasoft/varriables/color_variable.dart';
 import 'package:retinasoft/widget/app_bar_widget.dart';
 
+import '../varriables/varriable.dart';
 import '../widget/drawer_widget.dart';
 import '../widget/gridview_widget.dart';
 import '../widget/slider_widget.dart';
@@ -13,7 +14,13 @@ class HomePages extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBarWidget(titleName: "Home",),
+
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        title: Text("Home",style: Variables.style(context,20)),
+        centerTitle: true,
+        backgroundColor: AllColor.primaryColor,
+      ),
 
 
       body: _bodyUi(context),

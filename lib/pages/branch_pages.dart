@@ -162,7 +162,7 @@ class _BranchPagesState extends State<BranchPages> {
               child: Column(
                 children: [
                   Text(
-                    "Add Todo",
+                    "Add Branch",
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                   ),
                   TextField(

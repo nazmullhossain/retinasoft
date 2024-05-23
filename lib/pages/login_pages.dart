@@ -9,6 +9,7 @@ import 'package:retinasoft/varriables/config.dart';
 import '../conroller/api_helper.dart';
 import '../conroller/public_controller.dart';
 import '../varriables/color_variable.dart';
+import '../varriables/varriable.dart';
 import '../widget/app_bar_widget.dart';
 import '../widget/input_decration_widget.dart';
 import '../widget/loader_widget.dart';
@@ -37,8 +38,11 @@ class _LoginPagesState extends State<LoginPages> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBarWidget(
-        titleName: 'Login',
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        title: Text("Login",style: Variables.style(context,20)),
+        centerTitle: true,
+        backgroundColor: AllColor.primaryColor,
       ),
       body: GetBuilder<PublicController>(builder: (pc) {
         if (controller.size.value <= 0.0) controller.initApp(context);

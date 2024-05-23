@@ -6,6 +6,7 @@ import 'package:retinasoft/widget/app_bar_widget.dart';
 
 import '../conroller/public_controller.dart';
 import '../model/business_type_model.dart';
+import '../varriables/color_variable.dart';
 import '../varriables/config.dart';
 
 class BusinessTypePages extends StatefulWidget {
@@ -53,13 +54,21 @@ class _BusinessTypePagesState extends State<BusinessTypePages> {
                         itemCount: getBusinessType!.length,
                         itemBuilder: (context,index){
                         final  data=getBusinessType![index];
-                      return ListTile(
-                        tileColor: Colors.red,
-                        contentPadding: EdgeInsets.all(10),
+                      return Container(
+                        margin: EdgeInsets.all(5),
+                        height: 120,
+                        decoration: BoxDecoration(
+                          color: AllColor.secondaryColor,
 
-                        leading:Text("${data.id}"),
-                        title: Text("${data.name}"),
-                        subtitle: Text("${data.slug}"),
+                        ),
+                        child: ListTile(
+                          tileColor: Colors.red,
+                          contentPadding: EdgeInsets.all(10),
+
+                          leading:Text("${data.id}"),
+                          title: Text("${data.name}"),
+                          subtitle: Text("${data.slug}"),
+                        ),
                       );
                     }),
                   );

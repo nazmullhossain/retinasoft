@@ -50,7 +50,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                     ),
                     SizedBox(height: 8),
                     Text(
-                      'Unveiling Our Journey',
+                      'Retina soft',
                       style: TextStyle(
                           fontSize: 25,
                           color: Color(

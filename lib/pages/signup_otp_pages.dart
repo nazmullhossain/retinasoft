@@ -9,6 +9,8 @@ import 'package:retinasoft/widget/app_bar_widget.dart';
 import 'package:retinasoft/widget/text_field_widget.dart';
 
 import '../conroller/public_controller.dart';
+import '../varriables/color_variable.dart';
+import '../varriables/varriable.dart';
 
 class SignupOtpPages extends StatefulWidget {
   const SignupOtpPages({super.key});
@@ -27,7 +29,12 @@ class _SignupOtpPagesState extends State<SignupOtpPages> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBarWidget(titleName: 'Phone Number OTP',),
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          title: Text("Phone number otp",style: Variables.style(context,20)),
+          centerTitle: true,
+          backgroundColor: AllColor.primaryColor,
+        ),
         body: GetBuilder<PublicController>(
             builder: (pc) {
               return Padding(
