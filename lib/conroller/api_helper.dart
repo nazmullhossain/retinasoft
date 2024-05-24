@@ -7,6 +7,7 @@ import 'package:retinasoft/pages/login_pages.dart';
 import 'package:retinasoft/widget/navigation_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../model/business_type_model.dart';
+import '../model/customer_model.dart';
 import '../model/get_branch_model.dart';
 import '../pages/otp_pages.dart';
 import '../pages/signup_otp_pages.dart';
@@ -182,12 +183,14 @@ class ApiHelper {
 //***********Fetch Branch******************************************
   Future<List<Branches2>> getBranch() async {
     List<Branches2> brachch2 = [];
+    SharedPreferences prefs = await SharedPreferences.getInstance();
 
+    String token = prefs.getString("token") ??"";
     try {
       http.Response res = await http.get(
         Uri.parse(Variables.baseUrl + "admin/branches"),
         headers: {
-          'Authorization': 'Bearer ${PublicController.pc.token}',
+          'Authorization': 'Bearer $token',
         },
       );
       print("company data${res.body.length}");
@@ -207,6 +210,44 @@ class ApiHelper {
     }
     return brachch2;
   }
+
+
+  Future<List<Customers2>> getCustomer() async {
+    List<Customers2> customer2 = [];
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    String token = prefs.getString("token") ?? "";
+    String branch = prefs.getString("branch") ?? "";
+    try {
+      http.Response res = await http.get(
+       Uri.parse('${Variables.baseUrl}admin/$branch/0/customers'),
+        headers: {
+          'Authorization': 'Bearer $token',
+        },
+      );
+      print("company data${res.body}");
+
+      if (res.statusCode == 200) {
+        var jsonRes = jsonDecode(res.body);
+        print(jsonRes);
+
+        CustomerModel customerModel = CustomerModel.fromJson(jsonRes);
+
+        for (Customers2 data in customerModel.customers!.customers2!) {
+          customer2.add(data);
+        }
+      } else {}
+    } catch (e) {
+      print(e.toString());
+    }
+    return customer2;
+  }
+
+
+
+
+
+
 
 //***********Create Branch******************************************
   Future<void> createBranch(String branchName) async {
@@ -425,8 +466,9 @@ class ApiHelper {
       print('Response body: ${response.body}');
     }
   }
+
 //***********update account account******************************************
-  Future<void> updateProfile(BuildContext context, String name,int id) async {
+  Future<void> updateProfile(BuildContext context, String name, int id) async {
     try {
       const url = '${Variables.baseUrl}admin/profile/update';
       SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -442,7 +484,7 @@ class ApiHelper {
           'business_type_id': "6",
         },
       );
-        print("update=>>>>>>>>>>>>${response.body}");
+      print("update=>>>>>>>>>>>>${response.body}");
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(response.body);
         if (jsonResponse["status"] == 200) {

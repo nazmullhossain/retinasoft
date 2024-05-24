@@ -16,7 +16,7 @@ import 'api_helper.dart';
 class PublicController extends GetxController {
   ApiHelper apiHelper = ApiHelper();
   static PublicController pc = Get.find();
-  late SharedPreferences pref;
+   SharedPreferences? pref;
   RxDouble size = 0.0.obs;
   Rx<LoginModel> loginModel = LoginModel().obs;
   Rx<BusinessTypeModel> businessTypeModel = BusinessTypeModel().obs;
@@ -33,7 +33,7 @@ class PublicController extends GetxController {
   void onInit() {
     super.onInit();
 
-    getToken();
+    getApiKey();
   }
 
   Future<void> initApp(BuildContext context) async {
@@ -49,13 +49,8 @@ class PublicController extends GetxController {
     }
   }
 
-  getToken() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    token = await prefs.getString("token") ?? "";
-    token = await prefs.getString("branch") ?? "";
-    // id=await prefs.getInt("id")??0;
-    update();
-    print(token);
-
+  Future<String?> getApiKey() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString('api_key');
   }
 }

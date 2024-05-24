@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:retinasoft/conroller/api_helper.dart';
 import 'package:retinasoft/widget/app_bar_widget.dart';
-
 import '../conroller/public_controller.dart';
 import '../model/business_type_model.dart';
 import '../varriables/color_variable.dart';
@@ -18,10 +17,10 @@ class BusinessTypePages extends StatefulWidget {
 
 class _BusinessTypePagesState extends State<BusinessTypePages> {
   List<BusinessTypes>? getBusinessType;
-  ApiHelper apiHelper=ApiHelper();
+  ApiHelper apiHelper = ApiHelper();
 
-  Future<List<BusinessTypes>> getBusinessData()async{
-    getBusinessType=await apiHelper.getBusinessType(context);
+  Future<List<BusinessTypes>> getBusinessData() async {
+    getBusinessType = await apiHelper.getBusinessType(context);
     return getBusinessType!;
   }
 
@@ -31,57 +30,50 @@ class _BusinessTypePagesState extends State<BusinessTypePages> {
     super.initState();
 
     getBusinessData();
-
   }
-
-
-
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<PublicController>(
-      builder: (pc) {
-        return Scaffold(
-          appBar: AppBarWidget(titleName: 'Business type',),
-
+    return GetBuilder<PublicController>(builder: (pc) {
+      return Scaffold(
+          appBar: AppBarWidget(
+            titleName: 'Business type',
+          ),
           body: FutureBuilder<List<BusinessTypes>>(
               future: getBusinessData(),
-              builder: (context,snap){
-                if(snap.hasData){
+              builder: (context, snap) {
+                if (snap.hasData) {
                   return SizedBox(
-                    height: MediaQuery.of(context).size.height*0.9,
+                    height: MediaQuery.of(context).size.height * 0.9,
                     child: ListView.builder(
                         itemCount: getBusinessType!.length,
-                        itemBuilder: (context,index){
-                        final  data=getBusinessType![index];
-                      return Container(
-                        margin: EdgeInsets.all(5),
-                        height: 120,
-                        decoration: BoxDecoration(
-                          color: AllColor.secondaryColor,
-
-                        ),
-                        child: ListTile(
-                          tileColor: Colors.red,
-                          contentPadding: EdgeInsets.all(10),
-
-                          leading:Text("${data.id}"),
-                          title: Text("${data.name}"),
-                          subtitle: Text("${data.slug}"),
-                        ),
-                      );
-                    }),
+                        itemBuilder: (context, index) {
+                          final data = getBusinessType![index];
+                          return Container(
+                            margin: EdgeInsets.all(5),
+                            height: 120,
+                            decoration: BoxDecoration(
+                              color: AllColor.secondaryColor,
+                            ),
+                            child: ListTile(
+                              tileColor: Colors.red,
+                              contentPadding: EdgeInsets.all(10),
+                              leading: Text("${data.id}"),
+                              title: Text("${data.name}"),
+                              subtitle: Text("${data.slug}"),
+                            ),
+                          );
+                        }),
+                  );
+                } else if (snap.hasError) {
+                  return Center(
+                    child: Text("${snap.error}"),
                   );
                 }
-                else if(snap.hasError){
-                  return Center(child: Text("${snap.error}"),);
-                }
-                return Center(child: CircularProgressIndicator(),);
-              })
-
-        );
-      }
-    );
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              }));
+    });
   }
-
 }

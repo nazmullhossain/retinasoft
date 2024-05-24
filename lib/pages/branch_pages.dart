@@ -28,122 +28,75 @@ class _BranchPagesState extends State<BranchPages> {
   ApiHelper apiHelper = ApiHelper();
   TextEditingController _branchController = TextEditingController();
   TextEditingController _upbranchController = TextEditingController();
+  final controller = Get.put(PublicController());
+  List<Branches2>? getBusinessType;
 
-  StreamController<GetBrachModel> _streamController = StreamController();
-  Timer? timer;
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
-    _streamController.close();
-    timer!.cancel();
+  getBusinessData() async {
+    getBusinessType = await apiHelper.getBranch();
+    setState(() {});
   }
 
-  Timer? time;
   @override
   void initState() {
     // TODO: implement initState
-    getToken();
     super.initState();
-    timer = Timer.periodic(Duration(seconds: 1), (timer) {
-      getCustomerData();
-    });
-  }
 
-  String token = '';
-
-  getToken() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    token = await prefs.getString("token") ?? "";
-
-    print("token $token");
-  }
-
-  Future<void> getCustomerData() async {
-    try {
-      final url = Variables.baseUrl + 'admin/branches';
-      final resonse = await http.get(
-        Uri.parse(url),
-        headers: {
-          'Authorization': 'Bearer $token',
-        },
-      );
-      if (resonse.statusCode == 200) {
-        print(resonse.body);
-        final data = jsonDecode(resonse.body);
-        GetBrachModel customers2 = GetBrachModel.fromJson(data);
-        if (!_streamController.isClosed) {
-          _streamController.sink.add(customers2);
-        }
-      }
-    } catch (e) {
-      print(e.toString());
-    }
+    getBusinessData();
   }
 
   @override
   Widget build(BuildContext context) {
     return GetBuilder<PublicController>(builder: (pc) {
+      if (controller.size.value <= 0.0) controller.initApp(context);
       return Scaffold(
         appBar: AppBarWidget(
           titleName: 'Business type',
         ),
-        body: StreamBuilder<GetBrachModel>(
-            stream: _streamController.stream,
-            builder: (context, snap) {
-              if (snap.hasData) {
-                return SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.9,
-                  child: ListView.builder(
-                      itemCount: snap.data!.branches!.branches2!.length,
-                      itemBuilder: (context, index) {
-                        final data = snap.data!.branches!.branches2![index];
-                        return InkWell(
-                          onTap: () {},
-                          child: Container(
-                            height: dSize(0.4),
-                            // padding: EdgeInsets.all(10),
-                            margin: EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: AllColor.secondaryColor,
-                            ),
-                            child: ListTile(
-                              contentPadding: EdgeInsets.all(10),
-                              title: Text("${data.name}"),
-                              subtitle: Text("${data.id}"),
-                              trailing: Container(
-                                width: 180,
-                                child: Row(
-                                  children: [
-                                    OutlinedButton(
-                                        onPressed: () {
-                                          apiHelper.deleteBranch(data.id!);
-                                        },
-                                        child: Text("Delete")),
-                                    OutlinedButton(
-                                        onPressed: () {
-                                          _upbranchController.text = data.name!;
-                                          editEm(data.id!);
-                                        },
-                                        child: Text("Edit")),
-                                  ],
-                                ),
-                              ),
+        body: getBusinessType == null
+            ? Center(
+                child: Text("no data"),
+              )
+            : SizedBox(
+                height: MediaQuery.of(context).size.height * 0.9,
+                child: ListView.builder(
+                    itemCount: getBusinessType!.length,
+                    itemBuilder: (context, index) {
+                      final data = getBusinessType![index];
+                      return Container(
+                        height: dSize(0.4),
+                        // padding: EdgeInsets.all(10),
+                        margin: EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: AllColor.secondaryColor,
+                        ),
+                        child: ListTile(
+                          contentPadding: EdgeInsets.all(10),
+                          title: Text("${data.name}"),
+                          subtitle: Text("${data.id}"),
+                          trailing: Container(
+                            width: 180,
+                            child: Row(
+                              children: [
+                                OutlinedButton(
+                                    onPressed: ()async {
+                                      await apiHelper.deleteBranch(data.id!);
+                                      Navigator.push(context, MaterialPageRoute(builder: (_)=>BranchPages()));
+                                    },
+                                    child: Text("Delete")),
+                                OutlinedButton(
+                                    onPressed: () {
+                                      _upbranchController.text = data.name!;
+                                      editEm(data.id!);
+                                    },
+                                    child: Text("Edit")),
+                              ],
                             ),
                           ),
-                        );
-                      }),
-                );
-              } else if (snap.hasError) {
-                return Center(
-                  child: Text("${snap.error}"),
-                );
-              }
-              return Center(
-                child: CircularProgressIndicator(),
-              );
-            }),
+                        ),
+                      );
+                    }),
+              ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
             addEm();
@@ -187,8 +140,8 @@ class _BranchPagesState extends State<BranchPages> {
                               textColor: Colors.white,
                               fontSize: 16.0);
                         }
-
-                        Navigator.pop(context);
+                        await apiHelper.getBranch();
+                      Navigator.push(context, MaterialPageRoute(builder: (_)=>BranchPages()));
                       },
                       child: Text("Create Branch"))
                 ],
@@ -214,7 +167,11 @@ class _BranchPagesState extends State<BranchPages> {
                       onPressed: () async {
                         await apiHelper.updateBranch(
                             _upbranchController.text, id);
-                        Navigator.pop(context);
+                        // await apiHelper.getBranch();
+
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (_) => BranchPages()));
+
                       },
                       child: Text("Update"))
                 ],

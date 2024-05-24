@@ -46,48 +46,59 @@ class _CustomerPagesState extends State<CustomerPages> {
     print("token $token");
   }
 
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
-
-    _streamController.close();
-    timer!.cancel();
-  }
+  // @override
+  // void dispose() {
+  //   // TODO: implement dispose
+  //   super.dispose();
+  //
+  //   _streamController.close();
+  //   timer!.cancel();
+  // }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    getToken();
-    print("customer tokne${PublicController.pc.token}");
-    timer = Timer.periodic(Duration(seconds: 1), (timer) {
-      getCustomerData();
-    });
+    getBusinessData();
+    //getToken();
+    // print("customer tokne${PublicController.pc.token}");
+    // timer = Timer.periodic(Duration(seconds: 1), (timer) {
+    //   getCustomerData();
+    //});
   }
 
-  Future<void> getCustomerData() async {
-    try {
-      final url = '${Variables.baseUrl}admin/$branch/0/customers';
-      final resonse = await http.get(
-        Uri.parse(url),
-        headers: {
-          'Authorization': 'Bearer $token',
-        },
-      );
-      if (resonse.statusCode == 200) {
-        print(resonse.body);
-        final data = jsonDecode(resonse.body);
-        CustomerModel customers2 = CustomerModel.fromJson(data);
-        if (!_streamController.isClosed) {
-          _streamController.sink.add(customers2);
-        }
+  // Future<void> getCustomerData() async {
+  //   try {
+  //     final url = '${Variables.baseUrl}admin/$branch/0/customers';
+  //     final resonse = await http.get(
+  //       Uri.parse(url),
+  //       headers: {
+  //         'Authorization': 'Bearer $token',
+  //       },
+  //     );
+  //     if (resonse.statusCode == 200) {
+  //       print(resonse.body);
+  //       final data = jsonDecode(resonse.body);
+  //       CustomerModel customers2 = CustomerModel.fromJson(data);
+  //       if (!_streamController.isClosed) {
+  //         _streamController.sink.add(customers2);
+  //       }
+  //
+  //       print("c${customers2.customers!.customers2}");
+  //     }
+  //   } catch (e) {
+  //     print(e.toString());
+  //   }
+  // }
 
-        print("c${customers2.customers!.customers2}");
-      }
-    } catch (e) {
-      print(e.toString());
-    }
+  List<Customers2>? getBusinessType;
+
+
+  getBusinessData() async {
+    getBusinessType = await apiHelper.getCustomer();
+    setState(() {
+
+    });
   }
 
   @override
@@ -97,22 +108,8 @@ class _CustomerPagesState extends State<CustomerPages> {
       appBar: AppBarWidget(
         titleName: "customer",
       ),
-      body: StreamBuilder<CustomerModel>(
-          stream: _streamController.stream,
-          builder: (context, snap) {
-            if (snap.connectionState == ConnectionState.waiting) {
-              return Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-            if (snap.data!.customers!.customers2!.isEmpty) {
-              return Center(
-                child: Text("No data"),
-              );
-            }
-
-            return CustomerData(snap);
-          }),
+      body: getBusinessType==null? Center(child: CircularProgressIndicator(),) : getBusinessType!.isEmpty?Center(child: Text("no data"),)
+      :CustomerData(getBusinessType),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           addEm();
@@ -126,9 +123,9 @@ class _CustomerPagesState extends State<CustomerPages> {
     return SizedBox(
       height: MediaQuery.of(context).size.height * 0.9,
       child: ListView.builder(
-          itemCount: snap.data!.customers!.customers2!.length,
+          itemCount: snap.length,
           itemBuilder: (context, index) {
-            final cus = snap.data!.customers!.customers2![index];
+            final cus = snap[index];
 
             return InkWell(
               onTap: () {},
@@ -167,6 +164,7 @@ class _CustomerPagesState extends State<CustomerPages> {
                         OutlinedButton(
                             onPressed: () {
                               apiHelper.customerDelete(cus.id);
+                              Navigator.push(context, MaterialPageRoute(builder: (_)=>CustomerPages()));
                             },
                             child: Icon(Icons.delete)),
                       ],
@@ -203,7 +201,7 @@ class _CustomerPagesState extends State<CustomerPages> {
                             gmail.text.isNotEmpty) {
                           await apiHelper.createCustomer(
                               name.text, phone.text, gmail.text);
-                          Navigator.pop(context);
+
                         } else {
                           Fluttertoast.showToast(
                               msg: "Please complete all field",
@@ -214,6 +212,7 @@ class _CustomerPagesState extends State<CustomerPages> {
                               textColor: Colors.white,
                               fontSize: 16.0);
                         }
+                        Navigator.push(context, MaterialPageRoute(builder: (_)=>CustomerPages()));
                       },
                       child: Text("Create Branch"))
                 ],
@@ -246,7 +245,7 @@ class _CustomerPagesState extends State<CustomerPages> {
                             ephn.text.isNotEmpty) {
                           apiHelper.updateCustomer(
                               ename.text, egmail.text, ephn.text, id);
-                          Navigator.pop(context);
+
                         } else {
                           Fluttertoast.showToast(
                               msg: "Please complete all field",
@@ -257,6 +256,7 @@ class _CustomerPagesState extends State<CustomerPages> {
                               textColor: Colors.white,
                               fontSize: 16.0);
                         }
+                        Navigator.push(context, MaterialPageRoute(builder: (_)=>CustomerPages()));
                       },
                       child: Text("Update"))
                 ],
